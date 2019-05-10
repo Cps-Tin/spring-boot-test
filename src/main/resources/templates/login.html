@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>Signin Template for Bootstrap</title>
+		<!-- Bootstrap core CSS -->
+		<link href="../static/css/bootstrap.min.css" th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet">
+		<!-- Custom styles for this template -->
+		<link href="../static/css/signin.css" th:href="@{/static/css/signin.css}" rel="stylesheet">
+		<style>
+			.imageCode{
+				display: inline-block;
+				width: 55%;
+			}
+		</style>
+	</head>
+
+	<body class="text-center">
+		<form class="form-signin" action="/user/doLogin" th:action="@{/user/doLogin}" method="post">
+			<h1 class="h3 mb-3 font-weight-normal">Please Login</h1>
+			<br/>
+			<label class="sr-only">Username</label>
+			<input type="text" class="form-control" placeholder="Username" required="" autofocus="" name="userName">
+
+			<br/>
+
+			<label class="sr-only">Password</label>
+			<input type="password" class="form-control" placeholder="Password" required="" name="password">
+
+
+			<img src="/user/imageCode" th:src="@{/user/imageCode}">
+			<input type="text" class="form-control imageCode" placeholder="ImageCode" required="" name="imageCode" >
+
+			<br/><br/>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+			<p class="mt-5 mb-3 text-muted">© 2019-2020</p>
+			<a type="button" class="btn btn-primary" th:href="@{/user/export}">导出Excel</a>
+		</form>
+
+			<input id="file" type="file" class="btn btn-primary" name="file"/>
+			<input id="upLoad" type="button" value="上传" />
+			<button class="bth btn-primary" onclick="downLoad()" >下载</button>
+	</body>
+
+</html>
+
+<script type="text/javascript" src="../static/js/jquery-1.12.4.min.js"></script>
+
+<script type="text/javascript">
+
+	function downLoad(){
+		window.open("/downloadFile?fileName=306836_20190510141122273.jpg");
+	}
+
+	$(function () {
+
+		/*异步上传文件*/
+		$('#upLoad').click(function () {
+			var formData = new FormData();
+			formData.append('file', $("#file")[0].files[0]);
+			$.ajax({
+				url: '/uploadImg',
+				type: 'POST',
+				cache: false,
+				data: formData,
+				processData: false,
+				contentType: false
+			}).done(function(res) {
+
+			}).fail(function(res) {
+
+			});
+		})
+
+	})
+
+
+
+
+</script>

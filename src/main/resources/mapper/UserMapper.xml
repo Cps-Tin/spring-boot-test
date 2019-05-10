@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.cps.dao.UserMapper">
+
+
+    <!--查询用户集合-->
+    <!--分页查询也用这个方法，PageHelper 会使用拦截器添加limit-->
+    <select id="getUserList" resultType="User">
+        select * from user
+    </select>
+
+    <!--用户登录-->
+    <select id="doLogin" resultType="User">
+        select * from user where userName = #{userName} and password = #{password}
+    </select>
+
+    <!--根据ID查询用户-->
+    <select id="getUser" resultType="User">
+        select * from user where id = #{id}
+    </select>
+
+    <!--根据ID删除用户-->
+    <delete id="delUser">
+        delete from user where id = #{id}
+    </delete>
+
+    <!-- 更新用户信息 -->
+    <update id="updUser">
+        update user
+        <set>
+            <if test="userName!=null and userName!=''">userName = #{userName},</if>
+            <if test="password!=null and password!=''">password = #{password},</if>
+            <if test="gender!=null">gender = #{gender},</if>
+            <if test="createDate!=null">createDate = #{createDate}</if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

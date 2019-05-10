@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>Dashboard Template for Bootstrap</title>
+		<!-- Bootstrap core CSS -->
+		<link href="../static/css/bootstrap.min.css" th:href="@{../static/css/bootstrap.min.css}" rel="stylesheet">
+		<!-- Custom styles for this template -->
+		<link href="../static/asserts/css/dashboard.css" th:href="@{../static/asserts/css/dashboard.css}" rel="stylesheet">
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+		<nav th:replace="comment/bar :: #headerBar">
+
+		</nav>
+
+		<div class="container-fluid">
+			<div class="row">
+				<nav th:replace="comment/bar::#leftBar">
+
+				</nav>
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<h2>Section title</h2>
+					<div class="table-responsive">
+						<table class="table table-striped table-sm">
+							<thead>
+								<tr>
+									<th>#</th>
+									<th>用户名</th>
+									<th>性别</th>
+									<th>创建时间</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="user,status : ${result.data.list}">
+									<td th:utext="${status.count}">num</td>
+									<td th:utext="${user.userName}">1,001</td>
+									<td th:utext="${user.gender==1} ? '男':'女'">Lorem</td>
+									<!-- ${#dates.format(user.createDate,'yyyy-MM-dd HH:mm:ss')} -->
+									<td th:utext="${#dates.format(user.createDate,'yyyy-MM-dd HH:mm:ss')}">生日</td>
+									<td><a href="#" th:href="@{/user/}+${user.id}">修改</a>|<a href="#" th:userId="${user.id}" class="delUser">删除</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<!--删除用户表单-->
+						<form method="post" action="#" class="delUserForm">
+							<input name="_method" type="hidden" value="Delete" />
+						</form>
+
+
+					</div>
+				</main>
+			</div>
+		</div>
+
+
+		<script type="text/javascript" src="../static/js/jquery-3.2.1.slim.min.js"></script>
+		<script type="text/javascript" src="../static/js/popper.min.js"></script>
+		<script type="text/javascript" src="../static/js/bootstrap.min.js"></script>
+
+		<!-- Icons -->
+
+		<script>
+
+		</script>
+
+		<!-- Graphs -->
+
+		<script type="text/javascript">
+
+			$(function () {
+
+			})
+
+			$(function () {
+				$(".delUser").click(function () {
+					var userId = $(this).attr("userId");
+					$(".delUserForm").attr("action","/user/"+userId);
+					$(".delUserForm").submit();
+				})
+			})
+
+		</script>
+
+
+
+	</body>
+
+</html>
