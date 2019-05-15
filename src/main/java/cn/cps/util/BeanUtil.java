@@ -1,15 +1,38 @@
 package cn.cps.util;
 
+import cn.cps.entity.User;
+import cn.cps.entity.Users;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cglib.beans.BeanMap;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
 
 public class BeanUtil {
+
+    /**
+     * 反射机制：根据属性，获取get方法
+     * @param ob 对象
+     * @param name 属性名
+     * @return
+     * @throws Exception
+     */
+    public static Object getGetMethod(Object ob , String name) throws Exception {
+        Method[] m = ob.getClass().getMethods();
+        for(int i = 0;i < m.length;i++){
+            if(("get"+name).toLowerCase().equals(m[i].getName().toLowerCase())){
+                return m[i].invoke(ob);
+            }
+        }
+        return null;
+    }
+
+    
     /**
     * 将对象装换为map
     * @param bean
