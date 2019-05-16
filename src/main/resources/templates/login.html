@@ -11,7 +11,7 @@
 		<!-- Custom styles for this template -->
 		<link href="../static/css/signin.css" th:href="@{/static/css/signin.css}" rel="stylesheet">
 		<style>
-			.imageCode{
+			.checkCode{
 				display: inline-block;
 				width: 55%;
 			}
@@ -31,18 +31,19 @@
 			<input type="password" class="form-control" placeholder="Password" required="" name="password">
 
 
-			<img src="/user/imageCode" th:src="@{/user/imageCode}">
-			<input type="text" class="form-control imageCode" placeholder="ImageCode" required="" name="imageCode" >
+			<img src="/user/checkCode" th:src="@{/user/checkCode}">
+			<input type="text" class="form-control checkCode" placeholder="CheckCode" required="" name="checkCode" >
 
 			<br/><br/>
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 			<p class="mt-5 mb-3 text-muted">© 2019-2020</p>
-			<a type="button" class="btn btn-primary" th:href="@{/user/export}">导出Excel</a>
+
+			<input id="file" type="file" style="width: 70%;margin-left: 5%" /><br/><br/>
+			<a type="button" th:href="@{/user/export}" class="btn btn-lg btn-primary">导出</a>
+			<input id="upLoad" type="button" value="上传" class="btn btn-lg btn-primary"/>
+			<button onclick="downLoad()" class="btn btn-lg btn-primary">下载</button>
 		</form>
 
-			<input id="file" type="file" class="btn btn-primary" name="file"/>
-			<input id="upLoad" type="button" value="上传" />
-			<button class="bth btn-primary" onclick="downLoad()" >下载</button>
 	</body>
 
 </html>
@@ -51,8 +52,15 @@
 
 <script type="text/javascript">
 
+	var filePath;
+
 	function downLoad(){
-		window.open("/downloadFile?fileName=306836_20190510141122273.jpg");
+		//需要先上传文件，下载只能下载部署服务器上的文件
+		if(filePath==null || filePath == ""){
+			alert("请先上传文件!")
+		}else{
+			window.open("/downLoadFile?fileName="+filePath);
+		}
 	}
 
 	$(function () {
@@ -69,7 +77,14 @@
 				processData: false,
 				contentType: false
 			}).done(function(res) {
-
+				var result = JSON.parse(res)
+				if(result.message=="SUCCESS"){
+					alert("上传成功");
+					filePath = result.data;
+				}else{
+					alert(result.message);
+				}
+				console.log(result.data);
 			}).fail(function(res) {
 
 			});

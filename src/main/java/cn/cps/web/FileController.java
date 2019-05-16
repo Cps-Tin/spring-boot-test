@@ -2,6 +2,7 @@ package cn.cps.web;
 
 import cn.cps.core.ResultGenerator;
 import cn.cps.util.FileUtil;
+import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,13 +20,13 @@ import java.io.*;
 @Controller
 public class FileController {
 
-	String upLoadPath = "static"+File.separator+"upLoadFiles";
+	String upLoadPath = "static"+File.separator+"upLoadFiles" + File.separator;
 
 	@ResponseBody
 	@RequestMapping(value = "/uploadImg")
-	public Object upload(HttpServletRequest request) {
+	public String upload(HttpServletRequest request) {
 		String dirPath = request.getSession().getServletContext().getRealPath(upLoadPath);
-		return FileUtil.upLoadFile(dirPath,request);
+		return JSON.toJSONString(FileUtil.upLoadFile(dirPath,request));
 	}
 
 	/**

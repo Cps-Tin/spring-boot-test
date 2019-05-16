@@ -27,7 +27,7 @@ public class User {
     //这里使用了JSONArray.toJSONStringWithDateFormat()处理日期问题，在Result类中
     private Date createDate;
 
-    private String imageCode;
+    private String checkCode;
 
 
     public User(String userName, String password) {
@@ -43,7 +43,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", gender=" + gender +
                 ", createDate=" + createDate +
-                ", imageCode=" + imageCode +
+                ", checkCode=" + checkCode +
                 '}';
     }
 

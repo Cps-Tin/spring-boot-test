@@ -5,9 +5,10 @@ import cn.cps.core.ResultGenerator;
 import cn.cps.entity.User;
 import cn.cps.core.Response;
 import cn.cps.service.UserService;
+import cn.cps.util.BeanUtil;
 import cn.cps.util.ExcelUtil;
 import cn.cps.util.FileUtil;
-import cn.cps.util.ImageCodeUtil;
+import cn.cps.util.CheckCodeUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -58,10 +60,10 @@ public class UserController{
     @PostMapping("/doLogin")
     public String doLogin(User user, HttpSession session) {
         //在User中添加了个验证码字段
-        if(user.getImageCode()!=null && !user.getImageCode().equals("")){
-            String inputImageCode = user.getImageCode();
-            String sessionImageCode = (String) session.getAttribute(ImageCodeUtil.IMAGE_CODE);
-            session.removeAttribute(ImageCodeUtil.IMAGE_CODE);//清除Session中的imageCode
+        if(user.getCheckCode()!=null && !user.getCheckCode().equals("")){
+            String inputImageCode = user.getCheckCode();
+            String sessionImageCode = (String) session.getAttribute(CheckCodeUtil.CHECK_CODE);
+            session.removeAttribute(CheckCodeUtil.CHECK_CODE);//清除Session中的imageCode
             if(inputImageCode.equalsIgnoreCase(sessionImageCode)){
                 User u = userService.doLogin(user);
                 if (u != null) {
@@ -124,30 +126,47 @@ public class UserController{
     @ResponseBody
     @RequestMapping(value = "/export")
     public void export(HttpServletResponse response) throws Exception {
+
+        //日期格式化对象
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
         //获取数据
         List<User> list = userService.getUserList();
 
         //excel标题
         String[] title = {"ID", "名称", "性别", "创建日期"};
 
-        //excel文件名
-        String fileName = "学生信息表" + System.currentTimeMillis() + ".xls";
+        //实体类属性
+        String[] field = {"id", "userName", "gender", "createDate"};
 
         //sheet名
         String sheetName = "学生信息表";
+
+        //excel文件名
+        String fileName = sheetName + simpleDateFormat.format(new Date()) + ".xls";
 
         String[][] content = new String[list.size()][title.length];
         for (int i = 0; i < list.size(); i++) {
             content[i] = new String[title.length];
             User obj = list.get(i);
-            content[i][0] = obj.getId().toString();
-            content[i][1] = obj.getUserName();
-            content[i][2] = obj.getGender().toString();
-            content[i][3] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(obj.getCreateDate());
+            for(int j=0;j<field.length;j++){
+                Object object = BeanUtil.getGetMethod(obj,field[j].toString());
+                if(object instanceof Date){
+                    //处理日期格式
+                    content[i][j] = simpleDateFormat.format(object);
+                }else{
+                    content[i][j] = object.toString();
+                }
+            }
+
+//            content[i][0] = obj.getId().toString();
+//            content[i][1] = obj.getUserName();
+//            content[i][2] = obj.getGender().toString();
+//            content[i][3] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(obj.getCreateDate());
         }
 
         //创建HSSFWorkbook
-        HSSFWorkbook wb = ExcelUtil.getHSSFWorkbook(sheetName, title, content, null);
+        HSSFWorkbook wb = ExcelUtil.getHSSFWorkbook(sheetName, title, content);
 
         //响应到客户端
         try {
@@ -168,14 +187,14 @@ public class UserController{
     /**
      * 生成验证码
      */
-    @RequestMapping(value = "/imageCode")
-    public void getImageCode(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping(value = "/checkCode")
+    public void getCheckCode(HttpServletRequest request, HttpServletResponse response) {
         try {
             response.setContentType("image/jpeg");//设置相应类型,告诉浏览器输出的内容为图片
             response.setHeader("Pragma", "No-cache");//设置响应头信息，告诉浏览器不要缓存此内容
             response.setHeader("Cache-Control", "no-cache");
             response.setDateHeader("Expire", 0);
-            ImageCodeUtil randomValidateCode = new ImageCodeUtil();
+            CheckCodeUtil randomValidateCode = new CheckCodeUtil();
             randomValidateCode.getRandcode(request, response);//输出验证码图片方法
         } catch (Exception e) {
             System.err.println("将内存中的图片通过流动形式输出到客户端失败>>>>");

@@ -10,9 +10,9 @@ import java.security.MessageDigest;
 /**
  * MD5加密工具类
  */
-public class MD5 {
+public class MD5Util {
 
-	public static final Logger LOG = LoggerFactory.getLogger(MD5.class);
+	public static final Logger LOG = LoggerFactory.getLogger(MD5Util.class);
 
 	/**
 	 * 16进制字符集

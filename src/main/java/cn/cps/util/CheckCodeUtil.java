@@ -12,8 +12,8 @@ import java.util.Random;
  * @Author _Cps
  * @create 2019/3/19 15:34
  */
-public class ImageCodeUtil {
-    public static final String IMAGE_CODE= "imageCode";//放到session中的key
+public class CheckCodeUtil {
+    public static final String CHECK_CODE= "checkCode";//放到session中的key
     //private String randString = "0123456789";//随机产生只有数字的字符串 private String
     //private String randString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";//随机产生只有字母的字符串
     private String randString = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";//随机产生数字与字母组合的字符串
@@ -66,7 +66,7 @@ public class ImageCodeUtil {
             randomString = drowString(g, randomString, i);
         }
         //将生成的随机字符串保存到session中
-        session.setAttribute(IMAGE_CODE, randomString);
+        session.setAttribute(CHECK_CODE, randomString);
         g.dispose();
         try {
             // 将内存中的图片通过流动形式输出到客户端

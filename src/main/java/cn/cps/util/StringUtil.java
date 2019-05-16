@@ -224,7 +224,7 @@ public class StringUtil {
      * 获取MD5摘要信息
      */
     public static String getMD5(String msg) {
-        return MD5.getMD5String(msg);
+        return MD5Util.getMD5String(msg);
     }
 
     /**
@@ -252,7 +252,7 @@ public class StringUtil {
      * 获取新的用户唯一标识码
      */
     public static String getNewUserNo() {
-        return MD5.getMD5String(UUID.randomUUID().toString());
+        return MD5Util.getMD5String(UUID.randomUUID().toString());
     }
 
     public static boolean validIP(String rule, String ip) {

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
+ * @desc 使用通用Mapper
  * @author _Cps
  * @create 2019-02-14 10:12
  */

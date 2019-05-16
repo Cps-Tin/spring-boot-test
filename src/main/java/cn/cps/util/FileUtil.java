@@ -46,8 +46,10 @@ public class FileUtil {
             String prefixName = fileName.substring(0, fileName.lastIndexOf("."));
             // 获取后缀名
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            //上传到服务器文件名
+            fileName = prefixName + "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + suffixName;
             // 文件路径
-            String realPath = dirPath + File.separator + prefixName + "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + suffixName;
+            String realPath = dirPath + fileName;
 
             log.info(dirPath);
             log.info("文件大小:" + upLoadFile.getSize() / 1024 + "KB");
@@ -58,7 +60,7 @@ public class FileUtil {
                 dest.getParentFile().mkdirs();// 新建文件夹
             }
             upLoadFile.transferTo(dest);// 文件写入
-            return ResultGenerator.genSuccessResult("上传成功!");
+            return ResultGenerator.genSuccessResult(fileName);
         } catch (Exception e) {
             return ResultGenerator.genFailResult("出现异常:" + e);
         }
@@ -86,8 +88,10 @@ public class FileUtil {
                 String prefixName = fileName.substring(0, fileName.lastIndexOf("."));
                 // 获取后缀名
                 String suffixName = fileName.substring(fileName.lastIndexOf("."));
+                //上传到服务器文件名
+                fileName = prefixName + "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + suffixName;
                 // 文件路径
-                String realPath = dirPath + File.separator + prefixName + "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + suffixName;
+                String realPath = dirPath + fileName;
 
                 log.info(dirPath);
                 log.info("文件大小:" + upLoadFile.getSize() / 1024 + "KB");
@@ -112,7 +116,7 @@ public class FileUtil {
         BufferedInputStream bis = null;
         try {
             // 设置文件路径
-            String realPath = dirPath + File.separator + fileName;
+            String realPath = dirPath + fileName;
             File file = new File(realPath);
             if (file.exists()) {
                 //响应到客户端
@@ -134,7 +138,7 @@ public class FileUtil {
                 }
                 return ResultGenerator.genSuccessResult("下载成功!");
             }
-            return ResultGenerator.genSuccessResult("文件不存在，下载失败!");
+            return ResultGenerator.genFailResult("文件不存在，下载失败!");
         } catch (Exception e) {
             return ResultGenerator.genFailResult("出现异常:" + e);
         } finally {
