@@ -1,25 +1,50 @@
 package cn.cps.util;
 
+import cn.cps.entity.User;
+import org.apache.poi.hssf.record.formula.functions.T;
 import org.apache.poi.hssf.usermodel.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author _Cps
  * @create 2019-02-16 11:11
  */
-public class ExcelUtil {
+public class ExcelUtil<T> {
 
     /**
      * 导出Excel
-     * @param sheetName sheet名称
-     * @param title 标题
-     * @param values 内容
      * @return
      */
-    public static HSSFWorkbook getHSSFWorkbook(String sheetName, String []title, String [][]values){
+    public HSSFWorkbook getHSSFWorkbook(String sheetName, String []title, String [] field, List<T> list) throws Exception {
 
+        //日期格式化对象
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        String[][] content = new String[list.size()][title.length];
+        for (int i = 0; i < list.size(); i++) {
+            content[i] = new String[title.length];
+            Object obj = list.get(i);
+//            //一个一个设置属性的方式，现在已经转变成属性数组自动封装内容
+//            content[i][0] = obj.getId().toString();
+//            content[i][1] = obj.getUserName();
+//            content[i][2] = obj.getGender().toString();
+//            content[i][3] = simpleDateFormat.format(obj.getCreateDate());
+            //属性数组自动封装内容
+            for (int j = 0; j < field.length; j++) {
+                Object object = BeanUtil.getGetMethod(obj, field[j].toString());
+                if (object instanceof Date) {
+                    //处理日期格式
+                    content[i][j] = simpleDateFormat.format(object);
+                } else {
+                    content[i][j] = object.toString();
+                }
+            }
+        }
         // 1.创建一个HSSFWorkbook，对应一个Excel文件
         HSSFWorkbook wb = new HSSFWorkbook();
 
@@ -58,13 +83,13 @@ public class ExcelUtil {
         }
 
         //创建内容，并设置样式
-        for(int i=0;i<values.length;i++){
+        for(int i=0;i<content.length;i++){
             row = sheet.createRow(i + 1);
-            for(int j=0;j<values[i].length;j++){
+            for(int j=0;j<content[i].length;j++){
                 //将内容按顺序赋给对应的列对象
                 cell = row.createCell(j);
                 cell.setCellStyle(style2);
-                cell.setCellValue(values[i][j]);
+                cell.setCellValue(content[i][j]);
             }
         }
         return wb;

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -127,9 +128,6 @@ public class UserController{
     @RequestMapping(value = "/export")
     public void export(HttpServletResponse response) throws Exception {
 
-        //日期格式化对象
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
         //获取数据
         List<User> list = userService.getUserList();
 
@@ -143,30 +141,10 @@ public class UserController{
         String sheetName = "学生信息表";
 
         //excel文件名
-        String fileName = sheetName + simpleDateFormat.format(new Date()) + ".xls";
-
-        String[][] content = new String[list.size()][title.length];
-        for (int i = 0; i < list.size(); i++) {
-            content[i] = new String[title.length];
-            User obj = list.get(i);
-            for(int j=0;j<field.length;j++){
-                Object object = BeanUtil.getGetMethod(obj,field[j].toString());
-                if(object instanceof Date){
-                    //处理日期格式
-                    content[i][j] = simpleDateFormat.format(object);
-                }else{
-                    content[i][j] = object.toString();
-                }
-            }
-
-//            content[i][0] = obj.getId().toString();
-//            content[i][1] = obj.getUserName();
-//            content[i][2] = obj.getGender().toString();
-//            content[i][3] = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(obj.getCreateDate());
-        }
+        String fileName = sheetName + LocalDate.now() + ".xls";
 
         //创建HSSFWorkbook
-        HSSFWorkbook wb = ExcelUtil.getHSSFWorkbook(sheetName, title, content);
+        HSSFWorkbook wb = new ExcelUtil().getHSSFWorkbook(sheetName, title, field , list);
 
         //响应到客户端
         try {
