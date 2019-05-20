@@ -5,6 +5,7 @@ import cn.cps.dao.UsersMapper;
 import cn.cps.entity.User;
 import cn.cps.service.UserService;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,6 +28,11 @@ public class UserServiceImpl implements UserService {
     public List<User> getUserList() {
         System.out.println(JSONArray.toJSONString(usersMapper.selectAll()));;
         return userMapper.getUserList();
+    }
+
+    @Override
+    public List<JSONObject> getUserListJSONObject() {
+        return userMapper.getUserListJSONObject();
     }
 
     @Override

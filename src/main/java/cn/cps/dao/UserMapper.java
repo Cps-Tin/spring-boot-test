@@ -1,6 +1,7 @@
 package cn.cps.dao;
 
 import cn.cps.entity.User;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.List;
  */
 public interface UserMapper {
 
-    List<User> getUserList();
 
     User doLogin(User user);
 
@@ -20,4 +20,8 @@ public interface UserMapper {
     User getUser(@Param("id")Integer id);
 
     Integer updUser(User user);
+
+    List<User> getUserList();
+
+    List<JSONObject> getUserListJSONObject();
 }

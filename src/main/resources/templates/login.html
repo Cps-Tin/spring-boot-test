@@ -39,7 +39,7 @@
 			<p class="mt-5 mb-3 text-muted">© 2019-2020</p>
 
 			<input id="file" type="file" style="width: 70%;margin-left: 5%" /><br/><br/>
-			<a type="button" th:href="@{/user/export}" class="btn btn-lg btn-primary">导出</a>
+			<a href="/user/export" th:href="@{/user/export}"><input id="export" type="button" value="导出" class="btn btn-lg btn-primary"/></a>
 			<input id="upLoad" type="button" value="上传" class="btn btn-lg btn-primary"/>
 			<button onclick="downLoad()" class="btn btn-lg btn-primary">下载</button>
 		</form>

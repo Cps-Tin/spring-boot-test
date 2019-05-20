@@ -10,6 +10,16 @@
         select * from user
     </select>
 
+    <!-- 返回JSONObject类型 -->
+    <select id="getUserListJSONObject" resultType="com.alibaba.fastjson.JSONObject">
+        select *,
+         CASE gender
+            WHEN 0 THEN '女'
+            WHEN 1 THEN '男'
+         END AS genderName
+         from user
+    </select>
+
     <!--用户登录-->
     <select id="doLogin" resultType="User">
         select * from user where userName = #{userName} and password = #{password}

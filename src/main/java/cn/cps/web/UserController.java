@@ -5,10 +5,11 @@ import cn.cps.core.ResultGenerator;
 import cn.cps.entity.User;
 import cn.cps.core.Response;
 import cn.cps.service.UserService;
-import cn.cps.util.BeanUtil;
+import cn.cps.util.ExcelMake;
 import cn.cps.util.ExcelUtil;
 import cn.cps.util.FileUtil;
 import cn.cps.util.CheckCodeUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -21,10 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author _Cps
@@ -120,31 +118,43 @@ public class UserController{
     }
 
     /**
-     * 以流的方式导出报表
-     *
+     * 以流的方式导出报表(支持多表头)
      * @return
      */
     @ResponseBody
     @RequestMapping(value = "/export")
     public void export(HttpServletResponse response) throws Exception {
 
-        //获取数据
-        List<User> list = userService.getUserList();
-
-        //excel标题
-        String[] title = {"ID", "名称", "性别", "创建日期"};
-
-        //实体类属性
-        String[] field = {"id", "userName", "gender", "createDate"};
+        //需要的参数：ExcelMake对象、表头数据JSONOject对象、props属性、list数据
 
         //sheet名
-        String sheetName = "学生信息表";
+        String sheetName = "用户信息";
+
+        //属性配置
+        String[] props = {"id", "userName", "genderName", "createDate"};
+
+        //表头配置
+        String row1 = "[{width:'1',height:'3',name:'结算部门'},{width:'1',height:'3',name:'类型'},{width:'6',height:'1',name:'公司账户'}]";
+        String row2 = "[{width:'3',height:'1',name:'点心'},{width:'3',height:'1',name:'套餐'}]";
+        String row3 = "[{width:'',height:'',name:'刷卡次数'},{width:'',height:'',name:'单价'},{width:'',height:'',name:'总金额'},{width:'',height:'',name:'次数'},{width:'',height:'',name:'单价'},{width:'',height:'',name:'总金额'}]";
+
+        //封装成JSONObject对象
+        JSONObject sheetJSONObject = new JSONObject(){};
+        sheetJSONObject.put("row1",row1);
+        sheetJSONObject.put("row2",row2);
+        sheetJSONObject.put("row3",row3);
+
+        //获取数据---为什么是JSONObject对象，看Mapper.xml就理解了
+        List<JSONObject> list = userService.getUserListJSONObject();
 
         //excel文件名
-        String fileName = sheetName + LocalDate.now() + ".xls";
+        String fileName = sheetName + System.currentTimeMillis() + ".xls";
+
+        //绘制单元格对象
+        ExcelMake make = new ExcelMake(sheetName);
 
         //创建HSSFWorkbook
-        HSSFWorkbook wb = new ExcelUtil().getHSSFWorkbook(sheetName, title, field , list);
+        HSSFWorkbook wb = new ExcelUtil().getHSSFWorkbook(make, sheetJSONObject, props , list);
 
         //响应到客户端
         try {
@@ -156,14 +166,12 @@ public class UserController{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
 
     /**
      * 生成前端的图片验证码
-     */
-    /**
-     * 生成验证码
      */
     @RequestMapping(value = "/checkCode")
     public void getCheckCode(HttpServletRequest request, HttpServletResponse response) {
