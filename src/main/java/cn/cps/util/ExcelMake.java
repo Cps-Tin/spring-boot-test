@@ -1,12 +1,6 @@
 package cn.cps.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -14,15 +8,17 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 用于建立复杂的表头（这是我暂时用到的地方），用法
  * POIexcelMake make = new POIexcelMake('excel表名');
  * make.creatRow();
  * make.createCell();
  * make.createCell(with,height); //这里的with和height是excel单元格合并别的单元格的个数
- * 
- * @author chaospanda
- *
  */
 public class ExcelMake {
 

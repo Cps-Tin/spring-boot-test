@@ -125,24 +125,26 @@ public class UserController{
     @RequestMapping(value = "/export")
     public void export(HttpServletResponse response) throws Exception {
 
-        //需要的参数：ExcelMake对象、表头数据JSONOject对象、props属性、list数据
+        //需要的参数：ExcelMake对象、JSONOject对象、list数据
 
         //sheet名
         String sheetName = "用户信息";
 
         //属性配置
-        String[] props = {"id", "userName", "genderName", "createDate"};
+        String props = "['id', 'userName', 'genderName', 'createDate']";
 
         //表头配置
         String row1 = "[{width:'1',height:'3',name:'结算部门'},{width:'1',height:'3',name:'类型'},{width:'6',height:'1',name:'公司账户'}]";
         String row2 = "[{width:'3',height:'1',name:'点心'},{width:'3',height:'1',name:'套餐'}]";
-        String row3 = "[{width:'',height:'',name:'刷卡次数'},{width:'',height:'',name:'单价'},{width:'',height:'',name:'总金额'},{width:'',height:'',name:'次数'},{width:'',height:'',name:'单价'},{width:'',height:'',name:'总金额'}]";
+        String row3 = "[{width:'1',height:'1',name:'刷卡次数'},{width:'1',height:'1',name:'单价'},{width:'1',height:'1',name:'总金额'},{width:'1',height:'1',name:'次数'},{width:'1',height:'1',name:'单价'},{width:'1',height:'1',name:'总金额'}]";
 
         //封装成JSONObject对象
-        JSONObject sheetJSONObject = new JSONObject(){};
-        sheetJSONObject.put("row1",row1);
-        sheetJSONObject.put("row2",row2);
-        sheetJSONObject.put("row3",row3);
+        JSONObject data = new JSONObject(){};
+        data.put("1",row1);
+        data.put("2",row2);
+        data.put("3",row3);
+        data.put("props",props);
+        data.put("sheetName",sheetName);
 
         //获取数据---为什么是JSONObject对象，看Mapper.xml就理解了
         List<JSONObject> list = userService.getUserListJSONObject();
@@ -154,11 +156,11 @@ public class UserController{
         ExcelMake make = new ExcelMake(sheetName);
 
         //创建HSSFWorkbook
-        HSSFWorkbook wb = new ExcelUtil().getHSSFWorkbook(make, sheetJSONObject, props , list);
+        HSSFWorkbook wb = new ExcelUtil().getHSSFWorkbook(make, data , list);
 
         //响应到客户端
         try {
-            FileUtil.setResponseHeader(response, fileName);
+            FileUtil.setResponseHeader(fileName,response);
             OutputStream os = response.getOutputStream();
             wb.write(os);
             os.flush();
@@ -176,10 +178,7 @@ public class UserController{
     @RequestMapping(value = "/checkCode")
     public void getCheckCode(HttpServletRequest request, HttpServletResponse response) {
         try {
-            response.setContentType("image/jpeg");//设置相应类型,告诉浏览器输出的内容为图片
-            response.setHeader("Pragma", "No-cache");//设置响应头信息，告诉浏览器不要缓存此内容
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expire", 0);
+            FileUtil.setResponseHeader("验证码",response);
             CheckCodeUtil randomValidateCode = new CheckCodeUtil();
             randomValidateCode.getRandcode(request, response);//输出验证码图片方法
         } catch (Exception e) {

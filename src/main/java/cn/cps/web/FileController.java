@@ -12,16 +12,17 @@ import java.io.*;
 
 
 /**
- * 图片管理接口
- * 
- * @author yyc
- *
+ * 文件管理
  */
 @Controller
 public class FileController {
 
 	String upLoadPath = "static"+File.separator+"upLoadFiles" + File.separator;
 
+	/**
+	 * 上传图片
+	 * @param request
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/uploadImg")
 	public String upload(HttpServletRequest request) {
@@ -32,27 +33,24 @@ public class FileController {
 	/**
 	 * 文件下载
 	 * @param fileName
-	 * @param request
-	 * @param response
-	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("/downLoadFile")
 	public Object downLoadFile(String fileName,HttpServletRequest request, HttpServletResponse response) {
 		String dirPath = request.getSession().getServletContext().getRealPath(upLoadPath);
-		return FileUtil.downLoadFile(fileName,dirPath,request,response);
+		return FileUtil.downLoadFile(fileName,dirPath,response);
 	}
 
 	/**
 	 * 删除服务器文件
-	 * @param pathUrl
+	 * @param fileName
 	 * @return
 	 */
 	@ResponseBody
 	@RequestMapping("/revomeFile")
-	public Object revomeFile(String pathUrl,HttpServletRequest request){
-		//String filePath = request.getSession().getServletContext().getRealPath(upLoadPath);
-		return ResultGenerator.genSuccessResult(FileUtil.removeFile(File.separator+pathUrl));
+	public Object revomeFile(String fileName,HttpServletRequest request){
+		String dirPath = request.getSession().getServletContext().getRealPath(upLoadPath);
+		return ResultGenerator.genSuccessResult(FileUtil.removeFile(fileName,dirPath));
 	}
 
 }
