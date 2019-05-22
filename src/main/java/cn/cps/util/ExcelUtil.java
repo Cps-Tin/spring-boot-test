@@ -17,7 +17,7 @@ import java.util.List;
 public class ExcelUtil<T> {
 
     /**
-     * 导出Excel
+     * 封装数据并导出Excel
      * @return
      */
     public HSSFWorkbook getHSSFWorkbook(ExcelMake make, JSONObject data, List<JSONObject> list) throws Exception {

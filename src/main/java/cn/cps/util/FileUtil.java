@@ -22,7 +22,7 @@ import java.util.List;
 public class FileUtil {
 
     /**
-     * 单文件上传
+     * 单文件上传，文件名是input标签的value属性值
      * @param dirPath 上传到服务器的目录
      * @param request request请求
      * @return
@@ -69,8 +69,8 @@ public class FileUtil {
 
     /**
      * 下载文件
-     * @param fileName
-     * @param dirPath
+     * @param fileName 文件名
+     * @param dirPath 文件所在的目录
      * @param response
      * @return
      */
@@ -123,7 +123,12 @@ public class FileUtil {
         }
     }
 
-    //删除文件
+    /**
+     * 删除文件
+     * @param fileName 文件名
+     * @param dirPath 文件所在的目录
+     * @return
+     */
     public static boolean removeFile(String fileName, String dirPath) {
         boolean result = false;
         File file = null;

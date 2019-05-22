@@ -49,13 +49,6 @@ public class UserController{
     }
 
 
-    //如果不给类添加RequestMapping("/user")的话,下面就是配置默认访问页面
-    @GetMapping({"/", "/login.html"})
-    public String index(Model model) {
-        //重定向到 getUserList 请求
-        return "login";
-    }
-
     @PostMapping("/doLogin")
     public String doLogin(User user, HttpSession session) {
         //在User中添加了个验证码字段
@@ -77,16 +70,40 @@ public class UserController{
         return "login";
     }
 
+    /**
+     * 获取用户信息，并跳转页面
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("/{id}")
     public String getUser(@PathVariable("id") Integer id,Model model) {
         User user = userService.getUser(id);
         if (user != null) {
             model.addAttribute("user",user);
-            return "update";
         }
-        return "redirect:/user/userList";
+        return "update";
     }
 
+    /**
+     * 新增用户信息
+     * @param user
+     * @return
+     */
+    @PostMapping("/")
+    public String addUser(User user) {
+        Integer num = userService.addUser(user);
+        if (num > 0) {
+            return "redirect:/user/userList";
+        }
+        return "update";
+    }
+
+    /**
+     * 更新用户信息
+     * @param user
+     * @return
+     */
     @PutMapping("/{id}")
     public String updateUser(User user) {
         System.out.println(user.getCreateDate());
@@ -94,6 +111,11 @@ public class UserController{
         return "redirect:/user/userList";
     }
 
+    /**
+     * 删除用户信息
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public String delUser(@PathVariable("id") Integer id) {
         Integer num = userService.delUser(id);
@@ -102,6 +124,7 @@ public class UserController{
         }
         return "index";
     }
+
 
 
     @RequestMapping("/userList")
@@ -118,7 +141,7 @@ public class UserController{
     }
 
     /**
-     * 以流的方式导出报表(支持多表头)
+     * 以流的方式导出报表(支持多表头)，使用说明参考doc目录下的ExcelPlus导出报表.pdf
      * @return
      */
     @ResponseBody

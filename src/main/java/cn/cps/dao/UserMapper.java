@@ -24,4 +24,6 @@ public interface UserMapper {
     List<User> getUserList();
 
     List<JSONObject> getUserListJSONObject();
+
+    Integer addUser(User user);
 }

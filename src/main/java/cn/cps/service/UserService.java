@@ -24,4 +24,6 @@ public interface UserService{
     List<User> getUserList();
 
     List<JSONObject> getUserListJSONObject();
+
+    Integer addUser(User user);
 }
