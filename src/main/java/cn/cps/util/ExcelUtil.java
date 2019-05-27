@@ -29,20 +29,20 @@ public class ExcelUtil<T> {
 
         Iterator iterator = data.keySet().iterator();
 
-        JSONArray props = JSONArray.parseArray(data.get("props").toString());
+        JSONArray props = data.getJSONArray("props");
 
         //遍历行---封装表头信息
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             //我们只要row的信息---也就是出了props和sheetName
             String key = iterator.next().toString();
-            if(!"props".equalsIgnoreCase(key) && !"sheetName".equalsIgnoreCase(key)){
+            if (!"props".equalsIgnoreCase(key) && !"sheetName".equalsIgnoreCase(key)) {
                 make.createRow();
-                JSONArray cells = JSONArray.parseArray(data.get(key).toString());
+                JSONArray cells = data.getJSONArray(key);
                 for (int i = 0; i < cells.size(); i++) {
-                    JSONObject cell = JSONObject.parseObject(cells.get(i).toString());
-                    make.createCell(Integer.valueOf(cell.get("width").toString()),
-                            Integer.valueOf(cell.get("height").toString())).
-                            setCellValue(cell.get("name").toString());
+                    JSONObject cell = cells.getJSONObject(i);
+                    make.createCell(cell.getInteger("width"),
+                            cell.getInteger("height")).
+                            setCellValue(cell.getString("name"));
                 }
             }
         }
@@ -65,14 +65,15 @@ public class ExcelUtil<T> {
         HSSFSheet sheet = make.getHssfWorkbook().getSheet(make.getName());
 
         // 在sheet中表头的下方添加数据
-        for(int i=0;i<content.length;i++){
+        for (int i = 0; i < content.length; i++) {
             make.createRow();
-            for(int j=0;j<content[i].length;j++){
+            for (int j = 0; j < content[i].length; j++) {
                 make.createCell().setCellValue(content[i][j]);
             }
         }
         return wb;
     }
+
 
 
 
