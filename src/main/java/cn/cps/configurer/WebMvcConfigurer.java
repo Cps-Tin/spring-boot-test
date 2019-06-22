@@ -57,6 +57,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         super.addViewControllers(reg);
     }
 
+
     /**
      * 过滤静态资源文件
      * @param registry
@@ -120,10 +121,30 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         });
     }
 
+    /**
+     * 定义排除拦截路径
+     */
+    public String[] EXCLUDE_PATH_PATTERN = {
+            "/druid/**", "/api/wx/**",
+            "/api/test/**", "/api/user/**"
+            ,"/api/collect/**","/api/leave/**","/api/effect/**","/api/overtime/**"
+            ,"/api/reports/**"
+            ,"/api/dept/**"
+    };
+
     //解决跨域问题
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        //registry.addMapping("/**");
+        //设置允许跨域的路径
+        registry.addMapping("/**")
+                //设置允许跨域请求的域名
+                .allowedOrigins("*")
+                //是否允许证书 不再默认开启
+                .allowCredentials(true)
+                //设置允许的方法
+                .allowedMethods("*")
+                //跨域允许时间
+                .maxAge(3600);
     }
 
     //添加拦截器
@@ -148,7 +169,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                         return false;
                     }
                 }
-            });
+            });//.excludePathPatterns(EXCLUDE_PATH_PATTERN);后面这句代码属于排除拦截项
         }
     }
 
