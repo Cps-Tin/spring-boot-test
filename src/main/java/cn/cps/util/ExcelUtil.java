@@ -53,11 +53,15 @@ public class ExcelUtil<T> {
             JSONObject obj = list.get(i);
             for (int j = 0; j < props.size(); j++) {
                 Object object = obj.get(props.get(j));
-                if (object instanceof Date) {
-                    //处理日期格式
-                    content[i][j] = simpleDateFormat.format(object);
-                } else {
-                    content[i][j] = object.toString();
+                if(object!=null){
+                    if (object instanceof Date) {
+                        //处理日期格式
+                        content[i][j] = simpleDateFormat.format(object);
+                    } else {
+                        content[i][j] = object.toString();
+                    }
+                }else{
+                    content[i][j] = "";
                 }
             }
         }
