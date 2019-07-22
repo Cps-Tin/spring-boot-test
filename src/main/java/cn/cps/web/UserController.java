@@ -3,7 +3,7 @@ package cn.cps.web;
 import cn.cps.core.Result;
 import cn.cps.core.ResultGenerator;
 import cn.cps.entity.User;
-import cn.cps.core.Response;
+import cn.cps.core.ResultPages;
 import cn.cps.service.UserService;
 import cn.cps.util.ExcelMake;
 import cn.cps.util.ExcelUtil;
@@ -44,7 +44,7 @@ public class UserController{
         PageInfo<User> pageInfo = new PageInfo<User>(list);
 
         User user = new User("_Cps","admin");
-        Response<User> baseResponse = new Response<User>(pageInfo);
+        ResultPages<User> baseResponse = new ResultPages<User>(pageInfo);
         return ResultGenerator.genSuccessResult(baseResponse);
     }
 
@@ -133,7 +133,7 @@ public class UserController{
         PageHelper.startPage(pageNo, size);//进行分页
         List<User> userList = userService.getUserList();//查询数据
         PageInfo<User> pageInfo = new PageInfo<User>(userList);//封装信息到PageInfo对象中（pagehelper提供的）
-        Result result = ResultGenerator.genSuccessResult(new Response<>(pageInfo));
+        Result result = ResultGenerator.genSuccessResult(new ResultPages<>(pageInfo));
 
         model.addAttribute("result",result );
         System.out.println(result);
