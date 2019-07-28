@@ -66,7 +66,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //静态资源
         //映射访问资源根目录下的static文件夹，访问文件就不用添加前缀了
-        registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
     //使用阿里 FastJson 作为JSON MessageConverter
