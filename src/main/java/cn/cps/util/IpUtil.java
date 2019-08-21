@@ -1,5 +1,6 @@
 package cn.cps.util;
 
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,8 +10,6 @@ import java.net.UnknownHostException;
 
 /**
  * 获取IP方法
- * 
- * @author ruoyi
  */
 public class IpUtil
 {
@@ -19,7 +18,7 @@ public class IpUtil
     public static final String IP_URL = "http://ip.taobao.com/service/getIpInfo.php";
 
     /**
-     * 根据IP获取地址
+     * 根据IP获取地理位置
      * @param ip
      * @return
      */
@@ -37,9 +36,15 @@ public class IpUtil
             log.error("获取地理位置异常 {}", ip);
             return address;
         }
-        return address;
+        JSONObject obj = JSONObject.parseObject(rspStr).getJSONObject("data");
+        return obj.getString("country")+" "+obj.getString("region")+" "+obj.getString("city");
     }
 
+    /**
+     * 获取IP
+     * @param request
+     * @return
+     */
     public static String getIpAddr(HttpServletRequest request)
     {
         if (request == null)
@@ -67,6 +72,11 @@ public class IpUtil
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip))
         {
             ip = request.getRemoteAddr();
+        }
+
+        // 如果是多级代理，那么取第一个ip为客户端ip
+        if (ip != null && ip.indexOf(",") != -1) {
+            ip = ip.substring(0, ip.indexOf(",")).trim();
         }
 
         return "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
@@ -113,7 +123,7 @@ public class IpUtil
 
     /**
      * 将IPv4地址转换成字节
-     * 
+     *
      * @param text IPv4地址
      * @return byte 字节
      */
