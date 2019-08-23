@@ -33,13 +33,12 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.config.annotation.*;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * Spring MVC 配置
  */
 @Configuration
-public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
+public class WebMvcConfigurer extends WebMvcConfigurationSupport   {
 
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
     @Value("${spring.profiles.active}")
