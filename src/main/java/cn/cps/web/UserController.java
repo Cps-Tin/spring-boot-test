@@ -128,9 +128,9 @@ public class UserController{
 
 
     @RequestMapping("/userList")
-    public String getUserList(@RequestParam(defaultValue = "1") Integer pageNo,
+    public String getUserList(@RequestParam(defaultValue = "1") Integer current,
                               @RequestParam(defaultValue = "5") Integer size, Model model) {
-        PageHelper.startPage(pageNo, size);//进行分页
+        PageHelper.startPage(current, size);//进行分页
         List<User> userList = userService.getUserList();//查询数据
         PageInfo<User> pageInfo = new PageInfo<User>(userList);//封装信息到PageInfo对象中（pagehelper提供的）
         Result result = ResultGenerator.genSuccessResult(new ResultPages<>(pageInfo));

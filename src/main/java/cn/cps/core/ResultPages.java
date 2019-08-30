@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class ResultPages<T> {
 
-    private Integer pageNo;
+    private Integer current;
     private Integer pageSize;
 
     private Integer pages;
@@ -21,7 +21,7 @@ public class ResultPages<T> {
     }
 
     public ResultPages(PageInfo<T> page){
-        this.pageNo = page.getPageNum();
+        this.current = page.getPageNum();
         this.pageSize = page.getPageSize();
         this.total = page.getTotal();
         this.pages = page.getPages();
