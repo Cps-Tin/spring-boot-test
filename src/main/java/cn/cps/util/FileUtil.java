@@ -1,7 +1,7 @@
 package cn.cps.util;
 
+import cn.cps.core.Result;
 import cn.cps.core.ResultGenerator;
-import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -18,7 +18,6 @@ import java.util.List;
  * User: _Cps
  * Date: 2019.05.10 10:06
  */
-@Log4j
 public class FileUtil {
 
     /**
@@ -27,7 +26,7 @@ public class FileUtil {
      * @param request request请求
      * @return
      */
-    public static Object upLoadFile(String dirPath, HttpServletRequest request) {
+    public static Result upLoadFile(String upLoadPath,String dirPath, HttpServletRequest request) {
         try {
             List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
             if (files.size() < 1) {
@@ -46,13 +45,17 @@ public class FileUtil {
             String prefixName = fileName.substring(0, fileName.lastIndexOf("."));
             // 获取后缀名
             String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            System.err.println(suffixName);
+            if(!suffixName.equalsIgnoreCase(".BMP") && !suffixName.equalsIgnoreCase(".JPG") && !suffixName.equalsIgnoreCase(".JPEG") && !suffixName.equalsIgnoreCase(".PNG")){
+                return ResultGenerator.genFailResult("请选择图片!");
+            }
             //上传到服务器文件名
             fileName = prefixName + "_" + new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + suffixName;
             // 文件路径
             String realPath = dirPath + File.separator + fileName;
 
-            log.info(dirPath);
-            log.info("文件大小:" + upLoadFile.getSize() / 1024 + "KB");
+            System.out.println(dirPath);
+            System.out.println("文件大小:" + upLoadFile.getSize() / 1024 + "KB");
 
             File dest = new File(realPath);
             // 检测是否存在目录
@@ -60,7 +63,7 @@ public class FileUtil {
                 dest.getParentFile().mkdirs();// 新建文件夹
             }
             upLoadFile.transferTo(dest);// 文件写入
-            return ResultGenerator.genSuccessResult(fileName);
+            return ResultGenerator.genSuccessResult(File.separator + upLoadPath + fileName);
         } catch (Exception e) {
             return ResultGenerator.genFailResult("出现异常:" + e);
         }
@@ -74,7 +77,7 @@ public class FileUtil {
      * @param response
      * @return
      */
-    public static Object downLoadFile(String fileName, String dirPath, HttpServletResponse response) {
+    public static Result downLoadFile(String fileName, String dirPath, HttpServletResponse response) {
 
         FileInputStream fis = null;
         BufferedInputStream bis = null;
@@ -147,7 +150,7 @@ public class FileUtil {
     }
 
     //发送响应流方法
-    public static void setResponseHeader(String fileName,HttpServletResponse response) {
+    public static void setResponseHeader(String fileName, HttpServletResponse response) {
         try {
             try {
                 fileName = new String(fileName.getBytes("GBK"), "ISO8859-1");
