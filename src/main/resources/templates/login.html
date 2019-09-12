@@ -59,7 +59,7 @@
 		if(filePath==null || filePath == ""){
 			alert("请先上传文件!")
 		}else{
-			window.open("/downLoadFile?fileName="+filePath);
+			window.open("/file/downLoadFile?fileName="+filePath);
 		}
 	}
 
@@ -70,21 +70,19 @@
 			var formData = new FormData();
 			formData.append('file', $("#file")[0].files[0]);
 			$.ajax({
-				url: '/uploadImg',
+				url: 'file/uploadImg',
 				type: 'POST',
 				cache: false,
 				data: formData,
 				processData: false,
 				contentType: false
 			}).done(function(res) {
-				var result = JSON.parse(res)
-				if(result.message=="SUCCESS"){
+				if(res.code==200){
 					alert("上传成功");
-					filePath = result.data;
+					filePath = res.message;
 				}else{
-					alert(result.message);
+					alert(res.message);
 				}
-				console.log(result.data);
 			}).fail(function(res) {
 
 			});

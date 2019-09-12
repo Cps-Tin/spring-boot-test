@@ -26,7 +26,7 @@ public class FileUtil {
      * @param request request请求
      * @return
      */
-    public static Result upLoadFile(String upLoadPath,String dirPath, HttpServletRequest request) {
+    public static Result upLoadFile(String dirPath, HttpServletRequest request) {
         try {
             List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
             if (files.size() < 1) {
@@ -63,7 +63,7 @@ public class FileUtil {
                 dest.getParentFile().mkdirs();// 新建文件夹
             }
             upLoadFile.transferTo(dest);// 文件写入
-            return ResultGenerator.genSuccessResult(File.separator + upLoadPath + fileName);
+            return ResultGenerator.genSuccessResult(fileName);
         } catch (Exception e) {
             return ResultGenerator.genFailResult("出现异常:" + e);
         }

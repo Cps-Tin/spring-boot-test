@@ -38,7 +38,7 @@ public class FileController {
 	@RequestMapping(value = "/uploadImg")
 	public Result upload(HttpServletRequest request) {
 		String dirPath = request.getSession().getServletContext().getRealPath(upLoadPath);
-		return FileUtil.upLoadFile(upLoadPath,dirPath,request);
+		return FileUtil.upLoadFile(dirPath,request);
 	}
 
 	/**
