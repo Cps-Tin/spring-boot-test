@@ -41,9 +41,12 @@ import org.springframework.web.servlet.config.annotation.*;
 public class WebMvcConfigurer extends WebMvcConfigurationSupport   {
 
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
+
     @Value("${spring.profiles.active}")
     private String env;//当前激活的配置文件
 
+    @Value("${web.upload-path}")
+    private  String upLoadPath;//上传相对路径
 
     /**
      * 设置默认访问路径
@@ -65,7 +68,7 @@ public class WebMvcConfigurer extends WebMvcConfigurationSupport   {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //静态资源
         //映射访问资源根目录下的static文件夹，访问文件就不用添加前缀了
-        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/",upLoadPath);
     }
 
     //使用阿里 FastJson 作为JSON MessageConverter
