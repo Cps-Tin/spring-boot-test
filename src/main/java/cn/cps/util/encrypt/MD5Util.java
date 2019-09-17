@@ -1,4 +1,4 @@
-package cn.cps.util;
+package cn.cps.util.encrypt;
 
 
 import com.google.common.base.Strings;

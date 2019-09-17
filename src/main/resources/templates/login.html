@@ -38,10 +38,13 @@
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 			<p class="mt-5 mb-3 text-muted">© 2019-2020</p>
 
-			<input id="file" type="file" style="width: 70%;margin-left: 5%" /><br/><br/>
-			<a href="/user/export" th:href="@{/user/export}"><input id="export" type="button" value="导出" class="btn btn-lg btn-primary"/></a>
-			<input id="upLoad" type="button" value="上传" class="btn btn-lg btn-primary"/>
-			<button onclick="downLoad()" class="btn btn-lg btn-primary">下载</button>
+			<input id="importFile" type="file" />
+			<input id="import" type="button" value="导入Excel" /><br/><br/>
+
+			<input id="exportFile" type="file" style="width: 70%;margin-left: 5%" /><br/><br/>
+			<a href="/file/excel/export" th:href="@{/file/excel/export}"><input id="export" type="button" value="导出" class="btn btn-primary"/></a>
+			<input id="upLoad" type="button" value="上传" class="btn btn-primary"/>
+			<button onclick="downLoad()" class="btn btn-primary">下载</button>
 		</form>
 
 	</body>
@@ -66,11 +69,35 @@
 	$(function () {
 
 		/*异步上传文件*/
+		$('#import').click(function () {
+			var formData = new FormData();
+			formData.append('file', $("#importFile")[0].files[0]);
+			$.ajax({
+				url: '/file/excel/import',
+				type: 'POST',
+				cache: false,
+				data: formData,
+				processData: false,
+				contentType: false
+			}).done(function(res) {
+				if(res.code==200){
+					alert("上传成功");
+					filePath = res.message;
+				}else{
+					alert(res.message);
+				}
+			}).fail(function(res) {
+
+			});
+		})
+
+
+		/*异步上传文件*/
 		$('#upLoad').click(function () {
 			var formData = new FormData();
-			formData.append('file', $("#file")[0].files[0]);
+			formData.append('file', $("#exportFile")[0].files[0]);
 			$.ajax({
-				url: 'file/uploadImg',
+				url: 'file/upLoadImg',
 				type: 'POST',
 				cache: false,
 				data: formData,

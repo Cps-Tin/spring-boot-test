@@ -5,8 +5,6 @@ import cn.cps.core.ResultGenerator;
 import cn.cps.entity.User;
 import cn.cps.core.ResultPages;
 import cn.cps.service.UserService;
-import cn.cps.util.ExcelMake;
-import cn.cps.util.ExcelUtil;
 import cn.cps.util.FileUtil;
 import cn.cps.util.CheckCodeUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -126,7 +124,6 @@ public class UserController{
     }
 
 
-
     @RequestMapping("/userList")
     public String getUserList(@RequestParam(defaultValue = "1") Integer current,
                               @RequestParam(defaultValue = "5") Integer size, Model model) {
@@ -139,61 +136,6 @@ public class UserController{
         System.out.println(result);
         return "index";
     }
-
-    /**
-     * 以流的方式导出报表(支持多表头)，使用说明参考doc目录下的ExcelPlus导出报表.pdf
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/export")
-    public void export(HttpServletResponse response) throws Exception {
-
-        //需要的参数：ExcelMake对象、JSONOject对象、list数据
-
-        //sheet名
-        String sheetName = "用户信息";
-
-        //属性配置
-        String props = "['id', 'userName', 'genderName', 'createDate']";
-
-        //表头配置
-        String row1 = "[{width:'1',height:'3',name:'结算部门'},{width:'1',height:'3',name:'类型'},{width:'6',height:'1',name:'公司账户'}]";
-        String row2 = "[{width:'3',height:'1',name:'点心'},{width:'3',height:'1',name:'套餐'}]";
-        String row3 = "[{width:'1',height:'1',name:'刷卡次数'},{width:'1',height:'1',name:'单价'},{width:'1',height:'1',name:'总金额'},{width:'1',height:'1',name:'次数'},{width:'1',height:'1',name:'单价'},{width:'1',height:'1',name:'总金额'}]";
-
-        //封装成JSONObject对象
-        JSONObject data = new JSONObject(){};
-        data.put("1",row1);
-        data.put("2",row2);
-        data.put("3",row3);
-        data.put("props",props);
-        data.put("sheetName",sheetName);
-
-        //获取数据---为什么是JSONObject对象，看Mapper.xml就理解了
-        List<JSONObject> list = userService.getUserListJSONObject();
-
-        //excel文件名
-        String fileName = sheetName + System.currentTimeMillis() + ".xls";
-
-        //绘制单元格对象
-        ExcelMake make = new ExcelMake(sheetName);
-
-        //创建HSSFWorkbook
-        HSSFWorkbook wb = new ExcelUtil().getHSSFWorkbook(make, data , list);
-
-        //响应到客户端
-        try {
-            FileUtil.setResponseHeader(fileName,response);
-            OutputStream os = response.getOutputStream();
-            wb.write(os);
-            os.flush();
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
 
     /**
      * 生成前端的图片验证码
