@@ -1,6 +1,7 @@
 package cn.cps.util.excel;
 
 import cn.cps.util.FileUtil;
+import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.BaseRowModel;
@@ -27,16 +28,17 @@ public class ExcelUtil {
         //实例化实现了AnalysisEventListener接口的类
         ExcelListener listener = new ExcelListener();
         //传入参数
-        ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null, listener);
+        //ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null, listener);
+        ExcelReader excelReader = EasyExcelFactory.getReader(inputStream,listener);
         //读取信息
-        excelReader.read(new Sheet(2, 1, tClass));
+        excelReader.read(new Sheet(1, 1, tClass));
 
         //获取数据
         List<Object> list = listener.getDatas();
 
+        //封装成泛型返回值
         List<T> listReturn = new ArrayList<T>();
-
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 1; i < list.size(); i++) {
             T classObj = (T) list.get(i);
             listReturn.add(classObj);
         }
