@@ -31,7 +31,7 @@ public class ExcelUtil {
         //ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLSX, null, listener);
         ExcelReader excelReader = EasyExcelFactory.getReader(inputStream,listener);
         //读取信息
-        excelReader.read(new Sheet(1, 0, tClass));
+        excelReader.read(new Sheet(1, 1, tClass));
 
         //获取数据
         List<Object> list = listener.getDatas();
