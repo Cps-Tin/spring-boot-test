@@ -38,7 +38,7 @@ public class ExcelUtil {
 
         //封装成泛型返回值
         List<T> listReturn = new ArrayList<T>();
-        for (int i = 1; i < list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             T classObj = (T) list.get(i);
             listReturn.add(classObj);
         }
