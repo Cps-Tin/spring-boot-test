@@ -8,7 +8,7 @@ import cn.cps.service.UserService;
 import cn.cps.util.ExcelMake;
 import cn.cps.util.ExcelUtil;
 import cn.cps.util.FileUtil;
-import cn.cps.util.CheckCodeUtil;
+import cn.cps.util.VerifyCodeUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -21,6 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.*;
 
@@ -54,8 +55,8 @@ public class UserController{
         //在User中添加了个验证码字段
         if(user.getCheckCode()!=null && !user.getCheckCode().equals("")){
             String inputImageCode = user.getCheckCode();
-            String sessionImageCode = (String) session.getAttribute(CheckCodeUtil.CHECK_CODE);
-            session.removeAttribute(CheckCodeUtil.CHECK_CODE);//清除Session中的imageCode
+            String sessionImageCode = (String) session.getAttribute("CODE");
+            session.removeAttribute("CODE");//清除Session中的imageCode
             if(inputImageCode.equalsIgnoreCase(sessionImageCode)){
                 User u = userService.doLogin(user);
                 if (u != null) {
@@ -199,14 +200,16 @@ public class UserController{
      * 生成前端的图片验证码
      */
     @RequestMapping(value = "/checkCode")
-    public void getCheckCode(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            FileUtil.setResponseHeader("验证码",response);
-            CheckCodeUtil randomValidateCode = new CheckCodeUtil();
-            randomValidateCode.getRandcode(request, response);//输出验证码图片方法
-        } catch (Exception e) {
-            System.err.println("将内存中的图片通过流动形式输出到客户端失败>>>>");
-        }
+    public void getCheckCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //生成随机字串
+        String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
+        //存入会话session
+        request.getSession().setAttribute("CODE", verifyCode.toLowerCase());
+
+        //生成图片
+        int width = 120;//宽
+        int height = 40;//高
+        VerifyCodeUtils.outputImage(width, height, response.getOutputStream(), verifyCode);
     }
 
 
