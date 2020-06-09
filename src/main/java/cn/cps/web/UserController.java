@@ -201,14 +201,15 @@ public class UserController{
      */
     @RequestMapping(value = "/checkCode")
     public void getCheckCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        //生成随机字串
-        String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
-        //存入会话session
-        request.getSession().setAttribute("CODE", verifyCode.toLowerCase());
-
-        //生成图片
         int width = 120;//宽
         int height = 40;//高
+        int verifySize = 4;//验证码个数
+
+        //生成随机字串
+        String verifyCode = VerifyCodeUtils.generateVerifyCode(verifySize);
+        //存入会话session
+        request.getSession().setAttribute("CODE", verifyCode.toLowerCase());
+        //生成图片
         VerifyCodeUtils.outputImage(width, height, response.getOutputStream(), verifyCode);
     }
 
