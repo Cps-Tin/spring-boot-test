@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -119,20 +118,19 @@ public class VerifyCodeUtils {
     public static void outputImage(int w, int h, OutputStream os, String code) throws IOException{
         int verifySize = code.length();
         BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_BGR);
-        Random rand = new Random();
         Graphics2D g2 = image.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setBackground(Color.WHITE);
-        Color[] colors = new Color[5];
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
         Color[] colorSpaces = new Color[] { Color.WHITE, Color.CYAN,
                 Color.GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE,
                 Color.PINK, Color.YELLOW };
-        float[] fractions = new float[colors.length];
-        for(int i = 0; i < colors.length; i++){
-            colors[i] = colorSpaces[rand.nextInt(colorSpaces.length)];
-            fractions[i] = rand.nextFloat();
-        }
-        Arrays.sort(fractions);
+//        Color[] colors = new Color[5];
+//        float[] fractions = new float[colors.length];
+//        for(int i = 0; i < colors.length; i++){
+//            colors[i] = colorSpaces[random.nextInt(colorSpaces.length)];
+//            fractions[i] = random.nextFloat();
+//        }
+//        Arrays.sort(fractions);
 
         //设置背景色
         g2.setColor(Color.WHITE);
@@ -144,14 +142,45 @@ public class VerifyCodeUtils {
 
         //绘制干扰线
         Random random = new Random();
-        g2.setColor(getRandColor(160, 200));// 设置线条的颜色
         for (int i = 0; i < 20; i++) {
             int x = random.nextInt(w - 1);
             int y = random.nextInt(h - 1);
             int xl = random.nextInt(6) + 1;
             int yl = random.nextInt(12) + 1;
+            g2.setColor(colorSpaces[random.nextInt(colorSpaces.length)]);// 设置线条的颜色
             g2.drawLine(x, y, x + xl + 40, y + yl + 20);
         }
+
+        /*
+         * 绘制表格(横线、竖线)
+         * 设置表格线条的颜色
+         */
+        g2.setColor(new Color(134,192,253));
+
+        /*
+         * 绘制横线
+         * 循环横线切割的次数 但因为切割竖线，所以这里的尾坐标跟竖线有关
+         * (0,0) -> (20,0)
+         * (0,5) -> (20,5)
+         * (0,10) -> (20,10)
+         *  ······
+         */
+        for (int i = 0; i < h; i+=5) {
+            g2.drawLine(0, i, w, i);
+        }
+
+        /*
+         * 绘制竖线
+         * 循环横线切割的次数 但因为切割横线，所以这里的尾坐标跟横线有关
+         * (0,0) -> (0,15)
+         * (5,0) -> (5,15)
+         * (10,0) -> (10,15)
+         *  ······
+         */
+        for (int i = 0; i < w; i+=5) {
+            g2.drawLine(i, 0, i, h);
+        }
+
 
         // 添加噪点
         float yawpRate = 0.05f;// 噪声率
@@ -163,7 +192,7 @@ public class VerifyCodeUtils {
             image.setRGB(x, y, rgb);
         }
 
-        //shear(g2, w, h, c);// 使图片扭曲
+        //shear(g2, w, h, Color.WHITE);// 使图片扭曲
 
         g2.setColor(getRandColor(100, 160));
         int fontSize = h-4;
@@ -174,7 +203,7 @@ public class VerifyCodeUtils {
         //绘制字符串
         for(int i = 0; i < verifySize; i++){
             AffineTransform affine = new AffineTransform();
-            affine.setToRotation(Math.PI / 4 * rand.nextDouble() * (rand.nextBoolean() ? 1 : -1), (w / verifySize) * i + fontSize/2, h/2);
+            affine.setToRotation(Math.PI / 4 * random.nextDouble() * (random.nextBoolean() ? 1 : -1), (w / verifySize) * i + fontSize/2, h/2);
             g2.setTransform(affine);
             g2.setFont(new Font("Fixedsys", Font.CENTER_BASELINE, 30));
             g2.setColor(new Color(random.nextInt(101), random.nextInt(111), random.nextInt(121)));
