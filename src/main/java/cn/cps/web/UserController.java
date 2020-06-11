@@ -199,8 +199,8 @@ public class UserController{
     /**
      * 生成前端的图片验证码
      */
-    @RequestMapping(value = "/checkCode")
-    public void getCheckCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/verifyCode")
+    public void verifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int width = 120;//宽
         int height = 40;//高
         int verifySize = 4;//验证码个数
@@ -211,6 +211,26 @@ public class UserController{
         request.getSession().setAttribute("CODE", verifyCode.toLowerCase());
         //生成图片
         VerifyCodeUtils.outputImage(width, height, response.getOutputStream(), verifyCode);
+    }
+
+    /**
+     * 生成前端的图片验证码Base64
+     */
+    @ResponseBody
+    @RequestMapping(value = "/verifyCodeBase64")
+    public String  verifyCodeBase64(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int width = 120;//宽
+        int height = 40;//高
+        int verifySize = 4;//验证码个数
+
+        //生成随机字串
+        String verifyCode = VerifyCodeUtils.generateVerifyCode(verifySize);
+        //存入会话session
+        request.getSession().setAttribute("CODE", verifyCode.toLowerCase());
+        //生成图片
+        String imgBase64 = VerifyCodeUtils.outputImageBase64(width, height, verifyCode);
+
+        return imgBase64;
     }
 
 
