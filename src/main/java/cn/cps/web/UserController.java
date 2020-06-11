@@ -12,6 +12,9 @@ import cn.cps.util.VerifyCodeUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +32,7 @@ import java.util.*;
  * @author _Cps
  * @create 2019-02-14 10:24
  */
+@Api(tags="用户接口")
 @Controller
 @RequestMapping("/user")
 public class UserController{
@@ -51,15 +55,16 @@ public class UserController{
 
 
     @PostMapping("/doLogin")
+    @ApiOperation(value = "用户登录")
     public String doLogin(User user, HttpSession session) {
         //在User中添加了个验证码字段
-        if(user.getCheckCode()!=null && !user.getCheckCode().equals("")){
-            String inputImageCode = user.getCheckCode();
+        if(user.getVerifyCode()!=null && !user.getVerifyCode().equals("")){
+            String inputImageCode = user.getVerifyCode();
             String sessionImageCode = (String) session.getAttribute("CODE");
-            session.removeAttribute("CODE");//清除Session中的imageCode
             if(inputImageCode.equalsIgnoreCase(sessionImageCode)){
                 User u = userService.doLogin(user);
                 if (u != null) {
+                    session.removeAttribute("CODE");//清除Session中的imageCode
                     session.setAttribute("userSession",u);
                     return "redirect:/user/userList";
                 }
@@ -200,6 +205,7 @@ public class UserController{
      * 生成前端的图片验证码
      */
     @RequestMapping(value = "/verifyCode")
+    @ApiOperation(value = "生成前端的图片验证码", httpMethod = "POST", protocols = "HTTP", notes = "生成前端的图片验证码")
     public void verifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int width = 120;//宽
         int height = 40;//高
@@ -218,6 +224,7 @@ public class UserController{
      */
     @ResponseBody
     @RequestMapping(value = "/verifyCodeBase64")
+    @ApiOperation(value = "生成前端的图片验证码Base64", httpMethod = "POST", protocols = "HTTP", notes = "生成前端的图片验证码Base64", produces = "application/txt")
     public String  verifyCodeBase64(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int width = 120;//宽
         int height = 40;//高
