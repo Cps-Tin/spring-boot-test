@@ -64,7 +64,7 @@ public class UserController{
             if(inputImageCode.equalsIgnoreCase(sessionImageCode)){
                 User u = userService.doLogin(user);
                 if (u != null) {
-                    session.removeAttribute("CODE");//清除Session中的imageCode
+                    session.removeAttribute(VerifyCodeUtils.VERIFY_CODE);//清除Session中的imageCode
                     session.setAttribute("userSession",u);
                     return "redirect:/user/userList";
                 }
@@ -214,7 +214,7 @@ public class UserController{
         //生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(verifySize);
         //存入会话session
-        request.getSession().setAttribute("CODE", verifyCode.toLowerCase());
+        request.getSession().setAttribute(VerifyCodeUtils.VERIFY_CODE, verifyCode.toLowerCase());
         //生成图片
         VerifyCodeUtils.outputImage(width, height, response.getOutputStream(), verifyCode);
     }
