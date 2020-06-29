@@ -31,6 +31,7 @@ import java.util.*;
 /**
  * @author _Cps
  * @create 2019-02-14 10:24
+ * @desc 使用自定义mapper接口
  */
 @Api(tags="用户接口")
 @Controller
@@ -60,7 +61,7 @@ public class UserController{
         //在User中添加了个验证码字段
         if(user.getVerifyCode()!=null && !user.getVerifyCode().equals("")){
             String inputImageCode = user.getVerifyCode();
-            String sessionImageCode = (String) session.getAttribute("CODE");
+            String sessionImageCode = (String) session.getAttribute(VerifyCodeUtils.VERIFY_CODE);
             if(inputImageCode.equalsIgnoreCase(sessionImageCode)){
                 User u = userService.doLogin(user);
                 if (u != null) {
@@ -213,6 +214,7 @@ public class UserController{
 
         //生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(verifySize);
+        System.err.println("验证码:"+verifyCode);
         //存入会话session
         request.getSession().setAttribute(VerifyCodeUtils.VERIFY_CODE, verifyCode.toLowerCase());
         //生成图片

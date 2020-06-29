@@ -11,6 +11,7 @@ import javax.annotation.Resource;
 /**
  * @author _Cps
  * @create 2019-02-14 10:24
+ * @desc 使用MyBatis Mapper插件的Mapper接口
  */
 @Controller
 @RequestMapping("/users")
