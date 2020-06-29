@@ -205,8 +205,9 @@ public class UserController{
     /**
      * 生成前端的图片验证码
      */
-    @RequestMapping(value = "/verifyCode")
-    @ApiOperation(value = "生成前端的图片验证码", httpMethod = "POST", protocols = "HTTP", notes = "生成前端的图片验证码")
+    @ResponseBody
+    @GetMapping(value = "/verifyCode")
+    @ApiOperation(value = "生成前端的图片验证码", httpMethod = "GET", protocols = "HTTP", notes = "生成前端的图片验证码")
     public void verifyCode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int width = 120;//宽
         int height = 40;//高
@@ -235,7 +236,7 @@ public class UserController{
         //生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(verifySize);
         //存入会话session
-        request.getSession().setAttribute("CODE", verifyCode.toLowerCase());
+        request.getSession().setAttribute(VerifyCodeUtils.VERIFY_CODE, verifyCode.toLowerCase());
         //生成图片
         String imgBase64 = VerifyCodeUtils.outputImageBase64(width, height, verifyCode);
 
