@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -40,6 +41,39 @@ public class UserController{
 
     @Resource
     public UserService userService;
+
+
+    @ResponseBody
+    @RequestMapping("/getCookie")
+    public Result getCookie(HttpServletRequest request, HttpServletResponse response){
+
+        List list = new ArrayList();
+        if(request.getCookies()!=null){
+            for(Cookie cookie : request.getCookies()){
+                list.add(cookie);
+                System.out.println(JSONObject.toJSONString(cookie));
+            }
+            list.add(request.getSession(false).getId());
+            list.add(JSONObject.toJSONString(((User)request.getSession(false).getAttribute("userSession"))));
+
+        }
+
+        return ResultGenerator.genSuccessResult(JSONObject.toJSONString(list));
+    }
+
+
+    @ResponseBody
+    @RequestMapping("/setCookie")
+    public Result setCookie(HttpServletRequest request, HttpServletResponse response){
+
+        //response.addCookie(new Cookie("SESSION","OTBiMmU5ZTEtMDkwZS00NmNiLWJjZjItM2M3NjViNzU4NzAx"));
+        Cookie cookie = new Cookie("JSESSIONID","55D4682E125FB6197E2C7D59BE172A6B");
+        cookie.setMaxAge(20);
+        response.addCookie(cookie);
+
+        return ResultGenerator.genSuccessResult();
+    }
+
 
     @ResponseBody
     @RequestMapping("/test")

@@ -70,7 +70,7 @@
 			var formData = new FormData();
 			formData.append('file', $("#file")[0].files[0]);
 			$.ajax({
-				url: 'file/uploadImg',
+				url: 'http://127.0.0.1:8080/file/uploadImg',
 				type: 'POST',
 				cache: false,
 				data: formData,
